@@ -2,7 +2,9 @@ require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
 
-const bot = new TelegramBot(process.env.TG_TOKEN, { polling: true });
+const bot = new TelegramBot(process.env.TG_TOKEN, {
+  polling: true,
+});
 
 bot.on('voice', (msg) => {
   const stream = bot.getFileStream(msg.voice.file_id);
@@ -22,11 +24,11 @@ bot.on('voice', (msg) => {
     try {
       const response = await axios(axiosConfig);
       const { result } = response.data;
-      const chatId = msg.chat.id;
-      const userName = msg.from.first_name;
-      bot.sendMessage(chatId, `${userName} говорит:\n${result}`);
-    } catch (error) {
-      console.log('Error:', error);
+      const { id } = msg.chat;
+      const { first_name } = msg.from;
+      bot.sendMessage(id, `${first_name} говорит:\n${result}`);
+    } catch (e) {
+      console.log('Error:', e);
     }
   });
 });
